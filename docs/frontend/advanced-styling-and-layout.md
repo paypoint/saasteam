@@ -21,7 +21,7 @@ Modern CSS layout tools give:
 - responsive designs without hacks
 - reusable layout structures
 
-We focus on **Flexbox** (1D layout) and **Grid** (2D layout).
+We focus on **Flexbox** and **Grid**.
 
 ---
 
