@@ -1,10 +1,4 @@
-# Introduction to Database
-
-A database is where applications store and manage their data — such as users, orders, products, or transactions. In this course, you will learn what a database is, why databases are used instead of simple files, and how data is organized using tables, rows, and relationships. The focus is on building clear understanding through practical examples, so you can confidently read, write, and query data using SQL. By the end of the program, you will be comfortable working with databases, solving real-world data problems, and understanding how backend systems rely on databases every day.
-
----
-
-# 📚 Course Syllabus
+# Course Syllabus
 
 ---
 
