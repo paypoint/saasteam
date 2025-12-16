@@ -1,0 +1,299 @@
+# 1. Database Foundations
+
+This chapter introduces the core ideas behind databases.  
+The goal is **conceptual clarity first**, then light hands-on exposure — not memorizing syntax.
+
+---
+
+## 1. What Is a Database?
+
+A **database** is an organized collection of data that can be **stored, accessed, updated, and managed efficiently**.
+
+Examples of data stored in databases:
+
+- Users of an app
+- Orders and payments
+- Products and inventory
+- Logs and activity records
+
+Instead of keeping data scattered across files, databases provide:
+
+- structure
+- speed
+- safety
+- consistency
+
+---
+
+## 2. Why Databases Exist (Files vs Databases)
+
+### ❌ Using Files (Problems)
+
+Storing data in files (CSV, JSON, text files) causes issues:
+
+- No structure enforcement
+- Difficult to search and update
+- No concurrency control
+- High risk of data corruption
+- No security or access control
+
+Example:
+
+```txt
+user1, john@gmail.com, 9876543210
+user2, jane@gmail.com, 9123456789
+```
+
+### ✅ Using Databases (Benefits)
+
+Databases solve these problems by:
+
+- enforcing structure (tables, columns)
+- supporting fast queries
+- handling multiple users safely
+- providing backup and recovery
+- securing sensitive data
+
+---
+
+## 3. Types of Databases (Overview)
+
+Databases are broadly classified into:
+
+- Relational databases (SQL)
+- NoSQL databases
+
+Each type is designed for different use cases.
+
+---
+
+## 4. Relational Databases (SQL)
+
+Relational databases store data in tables with rows and columns.
+
+Popular SQL databases:
+
+- MySQL
+- PostgreSQL
+- SQL Server
+
+Characteristics:
+
+- Fixed schema
+- Strong consistency
+- Uses SQL (Structured Query Language)
+- Supports joins and constraints
+
+Example table:
+
+| id  | name  | email           |
+| --- | ----- | --------------- |
+| 1   | Rahul | rahul@email.com |
+| 2   | Anita | anita@email.com |
+
+---
+
+## 5. NoSQL Databases (Overview)
+
+NoSQL databases are designed for:
+
+- flexibility
+- large-scale systems
+- high performance
+
+They do not rely strictly on tables.
+
+### 5.1 Document Databases (MongoDB)
+
+- Store data as JSON-like documents
+- Flexible schema
+- Easy to evolve data structure
+
+Example document:
+
+```json
+{
+  "name": "Rahul",
+  "email": "rahul@email.com",
+  "orders": 5
+}
+```
+
+Use cases:
+
+- User profiles
+- Content management systems
+
+### 5.2 Key-Value Stores (Redis)
+
+- Data stored as key → value pairs
+- Extremely fast
+- Often used in memory
+
+Example:
+
+```txt
+"user:101" → "Rahul"
+```
+
+Use cases:
+
+- Caching
+- Session storage
+- Rate limiting
+
+### 5.3 Column-Based Databases (Cassandra)
+
+- Data stored by columns instead of rows
+- Designed for huge datasets
+- High write performance
+
+Use cases:
+
+- Analytics
+- Time-series data
+- Event logging
+
+---
+
+## 6. In-Memory Databases
+
+- Data stored in RAM instead of disk
+- Very fast
+- Data may be temporary
+
+Common use cases:
+
+- Caching
+- Real-time analytics
+- Session management
+
+Example: Redis used as in-memory cache.
+
+---
+
+## 7. OLTP vs OLAP (Overview)
+
+### OLTP (Online Transaction Processing)
+
+- Many small transactions
+- Insert, update, delete operations
+- Used by applications
+
+Example:
+
+- Banking transactions
+- E-commerce orders
+
+### OLAP (Online Analytical Processing)
+
+- Large data analysis
+- Aggregations and reporting
+- Used by analysts
+
+Example:
+
+- Sales reports
+- Business dashboards
+
+---
+
+## 8. Tables, Rows, and Columns
+
+In relational databases:
+
+- **Table** → collection of records
+- **Row** → single record
+- **Column** → attribute of data
+
+Example:
+
+```sql
+SELECT * FROM users;
+```
+
+---
+
+## 9. Primary Keys and Foreign Keys
+
+### Primary Key
+
+- Uniquely identifies a row
+- Cannot be NULL
+- Must be unique
+
+Example:
+
+```sql
+id INT PRIMARY KEY
+```
+
+### Foreign Key
+
+- References primary key of another table
+- Creates relationships
+
+Example:
+
+```sql
+user_id INT REFERENCES users(id)
+```
+
+---
+
+## 10. Constraints
+
+Constraints enforce data rules.
+
+### NOT NULL
+
+```sql
+name VARCHAR(50) NOT NULL
+```
+
+### UNIQUE
+
+```sql
+email VARCHAR(100) UNIQUE
+```
+
+### DEFAULT
+
+```sql
+status VARCHAR(20) DEFAULT 'active'
+```
+
+---
+
+## 11. Creating Tables
+
+Example: Creating a `users` table
+
+```sql
+CREATE TABLE users (
+  id INT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) UNIQUE,
+  created_at DATE DEFAULT CURRENT_DATE
+);
+```
+
+---
+
+## 12. Inserting Sample Data
+
+Insert a single row:
+
+```sql
+INSERT INTO users (id, name, email)
+VALUES (1, 'Rahul', 'rahul@email.com');
+```
+
+Insert multiple rows:
+
+```sql
+INSERT INTO users (id, name, email)
+VALUES
+  (2, 'Anita', 'anita@email.com'),
+  (3, 'Karan', 'karan@email.com');
+```

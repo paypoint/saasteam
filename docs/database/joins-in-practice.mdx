@@ -1,0 +1,254 @@
+# 4. Joins in Practice
+
+Joins are one of the **most important and most misunderstood** parts of SQL.
+
+This chapter teaches:
+
+- why joins exist
+- how tables relate to each other
+- how to join safely and correctly
+- how to avoid common mistakes that break data
+
+The goal is not memorization — it is **clear thinking about relationships**.
+
+---
+
+## Dataset Used in This Chapter
+
+We will use two tables: `users` and `orders`.
+
+### users
+
+| id  | name  | city   |
+| --- | ----- | ------ |
+| 1   | Rahul | Mumbai |
+| 2   | Anita | Delhi  |
+| 3   | Karan | Mumbai |
+| 4   | Neha  | Pune   |
+
+### orders
+
+| id  | user_id | amount |
+| --- | ------- | ------ |
+| 101 | 1       | 500    |
+| 102 | 1       | 800    |
+| 103 | 2       | 300    |
+| 104 | 5       | 1000   |
+
+> **Note:** `user_id = 5` does not exist in `users`.  
+> This is intentional to show join behavior clearly.
+
+---
+
+# 1. Why Joins Exist
+
+Data is **split across tables** to:
+
+- avoid duplication
+- keep data consistent
+- model real-world relationships
+
+Instead of storing user info repeatedly in `orders`, we store:
+
+- user details in `users`
+- order details in `orders`
+- link them using `user_id`
+
+Joins allow us to **combine related data when needed**.
+
+---
+
+# 2. INNER JOIN
+
+`INNER JOIN` returns **only matching rows** from both tables.
+
+## Example: Get orders with user names
+
+```sql
+SELECT u.name, o.amount
+FROM users u
+INNER JOIN orders o
+ON u.id = o.user_id;
+```
+
+### Output
+
+| name  | amount |
+| ----- | ------ |
+| Rahul | 500    |
+| Rahul | 800    |
+| Anita | 300    |
+
+Order with `user_id = 5` is excluded because there is no matching user.
+
+---
+
+# 3. LEFT JOIN
+
+`LEFT JOIN` returns:
+
+- all rows from the left table
+- matching rows from the right table
+- NULL when no match exists
+
+## Example: Get all users and their orders (if any)
+
+```sql
+SELECT u.name, o.amount
+FROM users u
+LEFT JOIN orders o
+ON u.id = o.user_id;
+```
+
+### Output
+
+| name  | amount |
+| ----- | ------ |
+| Rahul | 500    |
+| Rahul | 800    |
+| Anita | 300    |
+| Karan | NULL   |
+| Neha  | NULL   |
+
+Users without orders still appear.
+
+---
+
+# 4. Joining Multiple Tables
+
+Joins can be chained to combine more than two tables.
+
+Assume a third table:
+
+### payments
+
+| id  | order_id | status  |
+| --- | -------- | ------- |
+| 201 | 101      | SUCCESS |
+| 202 | 102      | FAILED  |
+| 203 | 103      | SUCCESS |
+
+## Example: User → Order → Payment
+
+```sql
+SELECT u.name, o.amount, p.status
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+INNER JOIN payments p ON o.id = p.order_id;
+```
+
+### Output
+
+| name  | amount | status  |
+| ----- | ------ | ------- |
+| Rahul | 500    | SUCCESS |
+| Rahul | 800    | FAILED  |
+| Anita | 300    | SUCCESS |
+
+---
+
+# 5. JOIN Conditions vs WHERE Conditions
+
+This is a very common source of bugs.
+
+## Correct Way
+
+Join relationship goes in `ON`.  
+Filters go in `WHERE`.
+
+```sql
+SELECT u.name, o.amount
+FROM users u
+LEFT JOIN orders o
+ON u.id = o.user_id
+WHERE u.city = 'Mumbai';
+```
+
+### Output
+
+| name  | amount |
+| ----- | ------ |
+| Rahul | 500    |
+| Rahul | 800    |
+| Karan | NULL   |
+
+## Incorrect Way (Changes Result!)
+
+```sql
+SELECT u.name, o.amount
+FROM users u
+LEFT JOIN orders o
+ON u.id = o.user_id
+WHERE o.amount > 400;
+```
+
+### What goes wrong?
+
+- `WHERE` filters out NULLs
+- `LEFT JOIN` behaves like `INNER JOIN`
+
+---
+
+# 6. Common Join Mistakes
+
+### ❌ Missing JOIN condition
+
+```sql
+SELECT *
+FROM users, orders;
+```
+
+Creates cartesian product (huge incorrect result).
+
+### ❌ Joining on wrong columns
+
+```sql
+ON users.name = orders.user_id
+```
+
+Wrong data types → wrong logic.
+
+### ❌ Filtering in WHERE instead of ON (LEFT JOIN)
+
+Causes accidental row loss.
+
+### ❌ Using INNER JOIN when LEFT JOIN is needed
+
+Data silently disappears.
+
+---
+
+# 7. When Joins Should Be Avoided
+
+Joins are powerful — but not always ideal.
+
+Avoid joins when:
+
+- querying simple, single-table data
+- data is already aggregated
+- joins cause performance issues at scale
+- denormalized reporting tables exist
+
+In real systems:
+
+- **OLTP** → normalized tables + joins
+- **OLAP** → fewer joins, pre-aggregated data
+
+---
+
+## Mental Model to Remember
+
+- **JOIN** = relationship
+- **WHERE** = filtering
+
+If you mix them incorrectly, results break.
+
+---
+
+# 🧪 Mini Practice Questions
+
+1. List all users and their total number of orders
+2. Find users who have never placed an order
+3. Get all orders with user city
+4. Show users from Delhi with their order amounts
+5. Find orders without a valid user

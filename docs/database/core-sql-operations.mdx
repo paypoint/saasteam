@@ -1,0 +1,227 @@
+# 2. Core SQL Operations
+
+In this chapter, you will start **writing real SQL**.  
+The focus is on understanding how data is stored, queried, updated, and removed.
+
+We will use a simple `users` table throughout.
+
+---
+
+## 1. SQL Data Types
+
+SQL data types define **what kind of data** a column can store.
+
+### Commonly Used Types
+
+| Data Type  | Description          | Example      |
+| ---------- | -------------------- | ------------ |
+| INT        | Whole numbers        | 10, 25       |
+| VARCHAR(n) | Text with max length | 'Rahul'      |
+| DATE       | Date values          | '2024-01-01' |
+| BOOLEAN    | True / False         | TRUE         |
+
+---
+
+## 2. CREATE TABLE with Constraints
+
+Let's create a `users` table.
+
+```sql
+CREATE TABLE users (
+  id INT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) UNIQUE,
+  age INT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at DATE
+);
+```
+
+What this means:
+
+- PRIMARY KEY → uniquely identifies each row
+- NOT NULL → value is required
+- UNIQUE → no duplicate emails
+- DEFAULT → value assigned automatically
+
+---
+
+## 3. INSERT Data
+
+### 3.1 Insert a Single Row
+
+```sql
+INSERT INTO users (id, name, email, age, created_at)
+VALUES (1, 'Rahul', 'rahul@email.com', 25, '2024-01-01');
+```
+
+### Table After Insert
+
+| id  | name  | email           | age | is_active | created_at |
+| --- | ----- | --------------- | --- | --------- | ---------- |
+| 1   | Rahul | rahul@email.com | 25  | TRUE      | 2024-01-01 |
+
+### 3.2 Insert Multiple Rows
+
+```sql
+INSERT INTO users (id, name, email, age, created_at)
+VALUES
+  (2, 'Anita', 'anita@email.com', 28, '2024-01-02'),
+  (3, 'Karan', 'karan@email.com', NULL, '2024-01-03');
+```
+
+### Table After Insert
+
+| id  | name  | email           | age  | is_active | created_at |
+| --- | ----- | --------------- | ---- | --------- | ---------- |
+| 1   | Rahul | rahul@email.com | 25   | TRUE      | 2024-01-01 |
+| 2   | Anita | anita@email.com | 28   | TRUE      | 2024-01-02 |
+| 3   | Karan | karan@email.com | NULL | TRUE      | 2024-01-03 |
+
+---
+
+## 4. SELECT Basics
+
+### 4.1 Select All Columns
+
+```sql
+SELECT * FROM users;
+```
+
+Output:
+
+| id  | name  | email           | age  | is_active | created_at |
+| --- | ----- | --------------- | ---- | --------- | ---------- |
+| 1   | Rahul | rahul@email.com | 25   | TRUE      | 2024-01-01 |
+| 2   | Anita | anita@email.com | 28   | TRUE      | 2024-01-02 |
+| 3   | Karan | karan@email.com | NULL | TRUE      | 2024-01-03 |
+
+### 4.2 Select Specific Columns
+
+```sql
+SELECT name, email FROM users;
+```
+
+Output:
+
+| name  | email           |
+| ----- | --------------- |
+| Rahul | rahul@email.com |
+| Anita | anita@email.com |
+| Karan | karan@email.com |
+
+---
+
+## 5. WHERE Conditions
+
+### 5.1 Filter by Value
+
+```sql
+SELECT * FROM users
+WHERE age > 25;
+```
+
+Output:
+
+| id  | name  | email           | age | is_active | created_at |
+| --- | ----- | --------------- | --- | --------- | ---------- |
+| 2   | Anita | anita@email.com | 28  | TRUE      | 2024-01-02 |
+
+### 5.2 Filter by Boolean
+
+```sql
+SELECT name FROM users
+WHERE is_active = TRUE;
+```
+
+Output:
+
+| name  |
+| ----- |
+| Rahul |
+| Anita |
+| Karan |
+
+---
+
+## 6. UPDATE Data
+
+### Update a Single Row
+
+```sql
+UPDATE users
+SET age = 26
+WHERE id = 1;
+```
+
+### Table After Update
+
+| id  | name  | age |
+| --- | ----- | --- |
+| 1   | Rahul | 26  |
+
+---
+
+## 7. DELETE Data
+
+### Delete a Row
+
+```sql
+DELETE FROM users
+WHERE id = 3;
+```
+
+### Table After Delete
+
+| id  | name  | email           |
+| --- | ----- | --------------- |
+| 1   | Rahul | rahul@email.com |
+| 2   | Anita | anita@email.com |
+
+---
+
+## 8. NULL Handling Basics
+
+### 8.1 Find NULL Values
+
+```sql
+SELECT * FROM users
+WHERE age IS NULL;
+```
+
+Output: No rows returned (because Karan was deleted)
+
+### 8.2 IS NOT NULL
+
+```sql
+SELECT name, age FROM users
+WHERE age IS NOT NULL;
+```
+
+Output:
+
+| name  | age |
+| ----- | --- |
+| Rahul | 26  |
+| Anita | 28  |
+
+---
+
+## 9. Hands-On Exercises
+
+Try these yourself:
+
+1. Insert a new user with:
+
+   - no age
+   - default is_active
+
+2. Select only active users
+
+3. Update a user's email
+
+4. Delete a user by name
+
+5. Find users created after 2024-01-01
+
+6. Select users where age is NULL

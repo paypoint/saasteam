@@ -1,0 +1,309 @@
+# 3. Querying and Problem Solving
+
+This chapter is about **thinking in SQL**.
+
+Until now, you learned _how SQL works_.  
+From this point onward, you'll learn _how to solve problems using SQL_.
+
+The goal is not memorizing syntax — it is learning how to:
+
+- read a problem
+- break it down
+- write the correct query confidently
+
+---
+
+## Dataset Used in This Chapter
+
+Assume the following `users` table:
+
+| id  | name  | age | city   | is_active |
+| --- | ----- | --- | ------ | --------- |
+| 1   | Rahul | 26  | Mumbai | TRUE      |
+| 2   | Anita | 28  | Delhi  | TRUE      |
+| 3   | Karan | 22  | Mumbai | FALSE     |
+| 4   | Neha  | 30  | Pune   | TRUE      |
+| 5   | Aman  | 24  | Delhi  | TRUE      |
+
+All examples and outputs below are based on this data.
+
+---
+
+# 1. WHERE Operators
+
+`WHERE` is used to **filter rows** based on conditions.
+
+---
+
+### 1.1 Equal (`=`)
+
+### Problem
+
+Get users from Mumbai.
+
+```sql
+SELECT name, city
+FROM users
+WHERE city = 'Mumbai';
+```
+
+### Output
+
+| name  | city   |
+| ----- | ------ |
+| Rahul | Mumbai |
+| Karan | Mumbai |
+
+---
+
+### 1.2 IN
+
+Used when a column can match multiple values.
+
+### Problem
+
+Get users from Mumbai or Delhi.
+
+```sql
+SELECT name, city
+FROM users
+WHERE city IN ('Mumbai', 'Delhi');
+```
+
+### Output
+
+| name  | city   |
+| ----- | ------ |
+| Rahul | Mumbai |
+| Anita | Delhi  |
+| Karan | Mumbai |
+| Aman  | Delhi  |
+
+---
+
+### 1.3 BETWEEN
+
+Used for ranges (numbers or dates).
+
+### Problem
+
+Get users aged between 24 and 28.
+
+```sql
+SELECT name, age
+FROM users
+WHERE age BETWEEN 24 AND 28;
+```
+
+### Output
+
+| name  | age |
+| ----- | --- |
+| Rahul | 26  |
+| Anita | 28  |
+| Aman  | 24  |
+
+---
+
+### 1.4 LIKE
+
+Used for pattern matching with text.
+
+| Pattern | Meaning       |
+| ------- | ------------- |
+| 'A%'    | starts with A |
+| '%a'    | ends with a   |
+| '%an%'  | contains an   |
+
+### Problem
+
+Get users whose name starts with A.
+
+```sql
+SELECT name
+FROM users
+WHERE name LIKE 'A%';
+```
+
+### Output
+
+| name  |
+| ----- |
+| Anita |
+| Aman  |
+
+---
+
+# 2. ORDER BY
+
+`ORDER BY` sorts the result set.
+
+### 2.1 Ascending Order (Default)
+
+### Problem
+
+List users by age (youngest first).
+
+```sql
+SELECT name, age
+FROM users
+ORDER BY age;
+```
+
+### Output
+
+| name  | age |
+| ----- | --- |
+| Karan | 22  |
+| Aman  | 24  |
+| Rahul | 26  |
+| Anita | 28  |
+| Neha  | 30  |
+
+### 2.2 Descending Order
+
+### Problem
+
+List users by age (oldest first).
+
+```sql
+SELECT name, age
+FROM users
+ORDER BY age DESC;
+```
+
+### Output
+
+| name  | age |
+| ----- | --- |
+| Neha  | 30  |
+| Anita | 28  |
+| Rahul | 26  |
+| Aman  | 24  |
+| Karan | 22  |
+
+---
+
+# 3. LIMIT and OFFSET
+
+Used for pagination and top-N queries.
+
+### 3.1 LIMIT
+
+### Problem
+
+Get the top 3 youngest users.
+
+```sql
+SELECT name, age
+FROM users
+ORDER BY age
+LIMIT 3;
+```
+
+### Output
+
+| name  | age |
+| ----- | --- |
+| Karan | 22  |
+| Aman  | 24  |
+| Rahul | 26  |
+
+### 3.2 LIMIT with OFFSET
+
+### Problem
+
+Skip the youngest user and show the next two.
+
+```sql
+SELECT name, age
+FROM users
+ORDER BY age
+LIMIT 2 OFFSET 1;
+```
+
+### Output
+
+| name  | age |
+| ----- | --- |
+| Aman  | 24  |
+| Rahul | 26  |
+
+---
+
+# 4. Aliases (AS)
+
+Aliases make column names readable and meaningful.
+
+```sql
+SELECT
+  name AS user_name,
+  age AS user_age
+FROM users;
+```
+
+### Output
+
+| user_name | user_age |
+| --------- | -------- |
+| Rahul     | 26       |
+| Anita     | 28       |
+| Karan     | 22       |
+| Neha      | 30       |
+| Aman      | 24       |
+
+---
+
+# 5. How to Read a Problem Statement
+
+Always follow this 5-step mental checklist:
+
+1. What data is needed?
+2. From which table(s)?
+3. What filters apply?
+4. Any sorting required?
+5. Any limit or pagination?
+
+## Example: Problem Breakdown
+
+### Problem
+
+"Get names of active users from Delhi, sorted by age (descending), show only top 2."
+
+### Breakdown
+
+- Table → users
+- Filters → is_active = TRUE, city = 'Delhi'
+- Sort → age DESC
+- Limit → 2
+
+### Final SQL Query
+
+```sql
+SELECT name, age
+FROM users
+WHERE is_active = TRUE
+AND city = 'Delhi'
+ORDER BY age DESC
+LIMIT 2;
+```
+
+### Output
+
+| name  | age |
+| ----- | --- |
+| Anita | 28  |
+| Aman  | 24  |
+
+---
+
+# 6. Mini Case Set (Practice Questions)
+
+Try solving these without looking at solutions:
+
+1. Find all inactive users
+2. Get users older than 25 from Mumbai
+3. List all users sorted by name (A–Z)
+4. Get first 3 active users
+5. Find users whose name contains 'an'
+6. Get users aged between 22 and 26 from Delhi
